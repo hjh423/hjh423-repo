@@ -1,0 +1,1911 @@
+<!DOCTYPE html>
+<html lang="ko" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>반도체·자동차 설비 메인터넌스 취업 준비 대시보드</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter & Noto Sans KR -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        tech: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#06b6d4',
+                            600: '#0891b2',
+                            900: '#0f172a',
+                            950: '#020617',
+                        },
+                        neon: {
+                            cyan: '#06b6d4',
+                            emerald: '#10b981',
+                            amber: '#f59e0b',
+                            blue: '#3b82f6',
+                            purple: '#a855f7'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Noto Sans KR', 'Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Glassmorphism custom styles */
+        .glass-card {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+        }
+        .glass-card-hover {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card-hover:hover {
+            border-color: rgba(6, 182, 212, 0.5);
+            box-shadow: 0 0 20px -5px rgba(6, 182, 212, 0.25);
+            transform: translateY(-2px);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #090d16;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #0891b2;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen custom-scrollbar selection:bg-cyan-500 selection:text-slate-950">
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- Top Navigation Header -->
+    <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 lg:px-8 py-3">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-slate-950 font-bold shadow-lg shadow-cyan-500/20">
+                    <i class="fa-solid fa-microchip text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold text-slate-100 flex items-center gap-2">
+                        메인터넌스 CAREER HUB
+                        <span class="text-xs font-normal px-2 py-0.5 rounded-full bg-cyan-950 text-cyan-400 border border-cyan-800/60">초대졸/전문대 전용</span>
+                    </h1>
+                    <p class="text-xs text-slate-400">반도체·자동차 설비보전/생산기술 취업 준비 통합 대시보드</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 text-xs">
+                <button onclick="resetAllDataConfirm()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-rotate-right text-slate-400"></i> 데이터 초기화
+                </button>
+                <div class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-400 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span id="currentDateDisplay">2026.10.28</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 lg:px-8 py-6 space-y-6">
+
+        <!-- 1. Stats Quick Summary Bar -->
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <!-- Stat 1 -->
+            <div class="glass-card rounded-2xl p-4 flex items-center justify-between">
+                <div>
+                    <p class="text-xs text-slate-400 font-medium">총 지원 관리</p>
+                    <h3 id="statTotalApps" class="text-2xl font-bold text-slate-100 mt-1">0<span class="text-xs text-slate-400 font-normal ml-1">개사</span></h3>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+                    <i class="fa-solid fa-paper-plane text-lg"></i>
+                </div>
+            </div>
+
+            <!-- Stat 2 -->
+            <div class="glass-card rounded-2xl p-4 flex items-center justify-between">
+                <div>
+                    <p class="text-xs text-slate-400 font-medium">진행 중 전형</p>
+                    <h3 id="statActiveApps" class="text-2xl font-bold text-amber-400 mt-1">0<span class="text-xs text-slate-400 font-normal ml-1">건</span></h3>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+                    <i class="fa-solid fa-spinner text-lg animate-spin" style="animation-duration: 6s;"></i>
+                </div>
+            </div>
+
+            <!-- Stat 3 -->
+            <div class="glass-card rounded-2xl p-4 flex items-center justify-between">
+                <div>
+                    <p class="text-xs text-slate-400 font-medium">면접 & 합격</p>
+                    <h3 id="statPassedApps" class="text-2xl font-bold text-emerald-400 mt-1">0<span class="text-xs text-slate-400 font-normal ml-1">건</span></h3>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                    <i class="fa-solid fa-award text-lg"></i>
+                </div>
+            </div>
+
+            <!-- Stat 4: Checklist Bar -->
+            <div class="glass-card rounded-2xl p-4 flex flex-col justify-between">
+                <div class="flex justify-between items-center">
+                    <p class="text-xs text-slate-400 font-medium">준비 체크리스트 달성률</p>
+                    <span id="checklistPercentText" class="text-xs font-bold text-cyan-400">0%</span>
+                </div>
+                <div class="mt-3">
+                    <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden p-0.5 border border-slate-700/50">
+                        <div id="checklistProgressBar" class="bg-gradient-to-r from-cyan-500 to-emerald-400 h-full rounded-full transition-all duration-500" style="width: 0%;"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Navigation Tabs -->
+        <nav class="flex space-x-2 border-b border-slate-800 overflow-x-auto custom-scrollbar pb-1">
+            <button onclick="switchTab('target-companies')" id="tab-target-companies" class="tab-btn px-4 py-2.5 rounded-t-xl font-medium text-sm transition flex items-center gap-2 whitespace-nowrap bg-slate-800 text-cyan-400 border-t border-x border-slate-700">
+                <i class="fa-solid fa-building"></i> 타겟 기업 분석
+            </button>
+            <button onclick="switchTab('job-postings')" id="tab-job-postings" class="tab-btn px-4 py-2.5 rounded-t-xl font-medium text-sm transition flex items-center gap-2 whitespace-nowrap text-slate-400 hover:text-slate-200 hover:bg-slate-900">
+                <i class="fa-solid fa-file-contract"></i> 채용공고 DB
+            </button>
+            <button onclick="switchTab('app-tracker')" id="tab-app-tracker" class="tab-btn px-4 py-2.5 rounded-t-xl font-medium text-sm transition flex items-center gap-2 whitespace-nowrap text-slate-400 hover:text-slate-200 hover:bg-slate-900">
+                <i class="fa-solid fa-table-list"></i> 지원 현황 트래커
+            </button>
+            <button onclick="switchTab('interview-prep')" id="tab-interview-prep" class="tab-btn px-4 py-2.5 rounded-t-xl font-medium text-sm transition flex items-center gap-2 whitespace-nowrap text-slate-400 hover:text-slate-200 hover:bg-slate-900">
+                <i class="fa-solid fa-user-ninja"></i> 기업별 면접 Vault
+            </button>
+            <button onclick="switchTab('experience-vault')" id="tab-experience-vault" class="tab-btn px-4 py-2.5 rounded-t-xl font-medium text-sm transition flex items-center gap-2 whitespace-nowrap text-slate-400 hover:text-slate-200 hover:bg-slate-900">
+                <i class="fa-solid fa-bolt"></i> 역량 Vault (STAR)
+            </button>
+            <button onclick="switchTab('troubleshooting')" id="tab-troubleshooting" class="tab-btn px-4 py-2.5 rounded-t-xl font-medium text-sm transition flex items-center gap-2 whitespace-nowrap text-slate-400 hover:text-slate-200 hover:bg-slate-900">
+                <i class="fa-solid fa-wrench"></i> 트러블슈팅 DB
+            </button>
+            <button onclick="switchTab('checklist')" id="tab-checklist" class="tab-btn px-4 py-2.5 rounded-t-xl font-medium text-sm transition flex items-center gap-2 whitespace-nowrap text-slate-400 hover:text-slate-200 hover:bg-slate-900">
+                <i class="fa-solid fa-square-check"></i> 취업 체크리스트
+            </button>
+        </nav>
+
+        <!-- TAB CONTENT 1: TARGET COMPANIES -->
+        <section id="content-target-companies" class="tab-content space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-100 flex items-center gap-2">
+                        <i class="fa-solid fa-industry text-cyan-400"></i> 주요 타겟 기업 핵심 조건 비교
+                    </h2>
+                    <p class="text-xs text-slate-400">초대졸(전문대) 설비보전/메인터넌스 채용 스펙 중심 정보</p>
+                </div>
+                <div class="text-xs text-slate-400 bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-800">
+                    💡 카드를 클릭하면 기업별 자소서/면접 맞춤 대응 전략을 확인할 수 있습니다.
+                </div>
+            </div>
+
+            <!-- Target Company Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="targetCompaniesGrid">
+                <!-- Dynamically populated via JS -->
+            </div>
+        </section>
+
+        <!-- TAB CONTENT 1.5: JOB POSTINGS DB -->
+        <section id="content-job-postings" class="tab-content space-y-6 hidden">
+            <!-- Header & Company Selector -->
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 glass-card p-5 rounded-2xl border border-slate-800">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-100 flex items-center gap-2">
+                        <i class="fa-solid fa-file-contract text-cyan-400"></i> 타겟 기업 채용공고 상세 요강 DB
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-1">전문대(초대졸) 설비보전/메인터넌스 모집요강, 자격요건, 우대 자격증, 주요 담당업무(JD) 및 전형절차</p>
+                </div>
+
+                <!-- Company Selector Pills -->
+                <div class="flex items-center gap-2 overflow-x-auto custom-scrollbar pb-1 text-xs">
+                    <button onclick="selectJobPostingCompany('hyundai-transys')" id="jp-btn-hyundai-transys" class="jp-comp-btn px-3.5 py-2 rounded-xl border font-bold transition flex items-center gap-1.5 whitespace-nowrap bg-cyan-500/20 text-cyan-300 border-cyan-500/40">
+                        <i class="fa-solid fa-car"></i> 현대트랜시스
+                    </button>
+                    <button onclick="selectJobPostingCompany('hl-mando')" id="jp-btn-hl-mando" class="jp-comp-btn px-3.5 py-2 rounded-xl border font-bold transition flex items-center gap-1.5 whitespace-nowrap bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200">
+                        <i class="fa-solid fa-gears"></i> HL만도
+                    </button>
+                    <button onclick="selectJobPostingCompany('stats-chippac')" id="jp-btn-stats-chippac" class="jp-comp-btn px-3.5 py-2 rounded-xl border font-bold transition flex items-center gap-1.5 whitespace-nowrap bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200">
+                        <i class="fa-solid fa-microchip"></i> 스태츠칩팩코리아
+                    </button>
+                    <button onclick="selectJobPostingCompany('sfa-semicon')" id="jp-btn-sfa-semicon" class="jp-comp-btn px-3.5 py-2 rounded-xl border font-bold transition flex items-center gap-1.5 whitespace-nowrap bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200">
+                        <i class="fa-solid fa-server"></i> SFA반도체
+                    </button>
+                </div>
+            </div>
+
+            <!-- Job Posting Detail View Container -->
+            <div id="jobPostingDetailContainer" class="space-y-5">
+                <!-- JS Populated -->
+            </div>
+        </section>
+
+        <!-- TAB CONTENT 2: APPLICATION TRACKER -->
+        <section id="content-app-tracker" class="tab-content space-y-4 hidden">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-100 flex items-center gap-2">
+                        <i class="fa-solid fa-table-list text-cyan-400"></i> 지원 현황 트래커
+                    </h2>
+                    <p class="text-xs text-slate-400">지원한 설비/메인터넌스 기업들의 전형 상태 및 마감일을 관리합니다.</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="openAddAppModal()" class="px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 font-bold rounded-xl hover:brightness-110 text-xs flex items-center gap-1.5 shadow-lg shadow-cyan-500/20">
+                        <i class="fa-solid fa-plus"></i> 지원 기업 추가
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filter Buttons -->
+            <div class="flex items-center gap-2 overflow-x-auto custom-scrollbar pb-1 text-xs">
+                <button onclick="filterApps('전체')" class="app-filter-btn px-3 py-1.5 rounded-lg bg-slate-800 text-cyan-400 border border-slate-700 font-medium">전체보기</button>
+                <button onclick="filterApps('서류 작성 중')" class="app-filter-btn px-3 py-1.5 rounded-lg bg-slate-900 text-slate-400 border border-slate-800 hover:text-slate-200">서류 작성 중</button>
+                <button onclick="filterApps('서류 제출 완료')" class="app-filter-btn px-3 py-1.5 rounded-lg bg-slate-900 text-slate-400 border border-slate-800 hover:text-slate-200">서류 제출 완료</button>
+                <button onclick="filterApps('인적성/검사')" class="app-filter-btn px-3 py-1.5 rounded-lg bg-slate-900 text-slate-400 border border-slate-800 hover:text-slate-200">인적성/검사</button>
+                <button onclick="filterApps('면접 전형')" class="app-filter-btn px-3 py-1.5 rounded-lg bg-slate-900 text-slate-400 border border-slate-800 hover:text-slate-200">면접 전형</button>
+                <button onclick="filterApps('최종 합격')" class="app-filter-btn px-3 py-1.5 rounded-lg bg-slate-900 text-slate-400 border border-slate-800 hover:text-slate-200">최종 합격</button>
+            </div>
+
+            <!-- Applications Table -->
+            <div class="glass-card rounded-2xl overflow-hidden border border-slate-800">
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left text-xs text-slate-300">
+                        <thead class="bg-slate-900/80 text-slate-400 font-semibold uppercase border-b border-slate-800">
+                            <tr>
+                                <th class="p-3.5">기업명 / 직무</th>
+                                <th class="p-3.5">전형 단계</th>
+                                <th class="p-3.5">마감일 / 일정</th>
+                                <th class="p-3.5">예상 연봉 / 근무지</th>
+                                <th class="p-3.5">핵심 메모 / 어필 포인트</th>
+                                <th class="p-3.5 text-center">관리</th>
+                            </tr>
+                        </thead>
+                        <tbody id="appsTableBody" class="divide-y divide-slate-800/60">
+                            <!-- JS Populated -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB CONTENT 3: COMPANY INTERVIEW PREP VAULT -->
+        <section id="content-interview-prep" class="tab-content space-y-6 hidden">
+            <!-- Header & Company Selector -->
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 glass-card p-5 rounded-2xl border border-slate-800">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-100 flex items-center gap-2">
+                        <i class="fa-solid fa-user-ninja text-cyan-400"></i> 4대 타겟 기업 맞춤 면접 준비 Vault
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-1">기업별 1분 자기소개, STAR 기법 전공 면접 답안, 필수 기술 플래시카드 & 실전 모의 면접</p>
+                </div>
+
+                <!-- Company Selector Pills -->
+                <div class="flex items-center gap-2 overflow-x-auto custom-scrollbar pb-1 text-xs">
+                    <button onclick="selectPrepCompany('hyundai-transys')" id="prep-btn-hyundai-transys" class="prep-comp-btn px-3.5 py-2 rounded-xl border font-bold transition flex items-center gap-1.5 whitespace-nowrap bg-cyan-500/20 text-cyan-300 border-cyan-500/40">
+                        <i class="fa-solid fa-car"></i> 현대트랜시스
+                    </button>
+                    <button onclick="selectPrepCompany('hl-mando')" id="prep-btn-hl-mando" class="prep-comp-btn px-3.5 py-2 rounded-xl border font-bold transition flex items-center gap-1.5 whitespace-nowrap bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200">
+                        <i class="fa-solid fa-gears"></i> HL만도
+                    </button>
+                    <button onclick="selectPrepCompany('stats-chippac')" id="prep-btn-stats-chippac" class="prep-comp-btn px-3.5 py-2 rounded-xl border font-bold transition flex items-center gap-1.5 whitespace-nowrap bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200">
+                        <i class="fa-solid fa-microchip"></i> 스태츠칩팩코리아
+                    </button>
+                    <button onclick="selectPrepCompany('sfa-semicon')" id="prep-btn-sfa-semicon" class="prep-comp-btn px-3.5 py-2 rounded-xl border font-bold transition flex items-center gap-1.5 whitespace-nowrap bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200">
+                        <i class="fa-solid fa-server"></i> SFA반도체
+                    </button>
+                </div>
+            </div>
+
+            <!-- SECTION 1: 1-Minute Pitch Script -->
+            <div class="glass-card rounded-2xl p-5 border border-slate-800 space-y-3">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-sm font-bold text-cyan-400 flex items-center gap-2">
+                        <i class="fa-solid fa-bullhorn"></i> <span id="pitchCompanyTitle">현대트랜시스</span> 맞춤 1분 자기소개 스크립트 (초대졸/설비보전)
+                    </h3>
+                    <button onclick="copyPitchToClipboard()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-copy text-cyan-400"></i> 스크립트 복사
+                    </button>
+                </div>
+                <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800/80 text-slate-200 text-xs leading-relaxed font-sans whitespace-pre-line" id="pitchScriptText">
+                    <!-- JS Populated -->
+                </div>
+            </div>
+
+            <!-- SECTION 2: Top Interview Questions & STAR Model Answers -->
+            <div class="space-y-4">
+                <h3 class="text-base font-bold text-slate-100 flex items-center gap-2">
+                    <i class="fa-solid fa-comments text-cyan-400"></i> 기업별 핵심 빈출 면접 질문 & STAR 모범 답안
+                </h3>
+
+                <div class="space-y-4" id="companyQuestionsContainer">
+                    <!-- JS Populated -->
+                </div>
+            </div>
+
+            <!-- SECTION 3: Technical Concept Flashcards -->
+            <div class="glass-card rounded-2xl p-5 border border-slate-800 space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div>
+                        <h3 class="text-base font-bold text-slate-100 flex items-center gap-2">
+                            <i class="fa-solid fa-clone text-emerald-400"></i> 메인터넌스 필수 전공/기술 플래시카드 (클릭하여 정답 확인)
+                        </h3>
+                        <p class="text-xs text-slate-400">모터, 센서/노이즈, 유공압 밸브, 진공 펌프, SECS/GEM, LOTO 안전</p>
+                    </div>
+                    <span class="text-[11px] text-cyan-400 bg-cyan-950/60 px-3 py-1 rounded-lg border border-cyan-800/60">💡 카드를 클릭하면 모범 답변이 나타납니다.</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3" id="flashcardsGrid">
+                    <!-- JS Populated -->
+                </div>
+            </div>
+
+            <!-- SECTION 4: Interactive Mock Interview Simulator -->
+            <div class="glass-card rounded-2xl p-5 border border-slate-800 space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                    <div>
+                        <h3 class="text-base font-bold text-slate-100 flex items-center gap-2">
+                            <i class="fa-solid fa-gamepad text-purple-400"></i> 실전 모의 면접 시뮬레이터
+                        </h3>
+                        <p class="text-xs text-slate-400">질문에 대해 직접 답변을 작성한 후, 모범 답안과 필수 핵심 키워드 포함 여부를 셀프 점검하세요.</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4 text-xs">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-slate-400 mb-1 font-medium">대상 기업 선택</label>
+                            <select id="mockCompSelect" onchange="loadMockQuestions()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-slate-200 focus:outline-none focus:border-cyan-500">
+                                <option value="hyundai-transys">현대트랜시스</option>
+                                <option value="hl-mando">HL만도</option>
+                                <option value="stats-chippac">스태츠칩팩코리아</option>
+                                <option value="sfa-semicon">SFA반도체</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-slate-400 mb-1 font-medium">면접 질문 선택</label>
+                            <select id="mockQuestSelect" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-slate-200 focus:outline-none focus:border-cyan-500">
+                                <!-- JS Populated -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Question Display Card -->
+                    <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
+                        <span class="text-[10px] font-bold text-purple-400 uppercase block mb-1">INTERVIEW QUESTION</span>
+                        <p id="mockQuestionDisplay" class="text-sm font-bold text-slate-100">질문을 선택하세요.</p>
+                    </div>
+
+                    <!-- User Response Textarea -->
+                    <div>
+                        <label class="block text-slate-400 mb-1 font-medium">내 답변 작성하기 (STAR 구조 추천: 상황 -> 역할 -> 조치 -> 결과)</label>
+                        <textarea id="mockUserAnswer" rows="4" placeholder="실제 면접이라 생각하고 답변을 입력해보세요..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-slate-200 focus:outline-none focus:border-cyan-500 custom-scrollbar"></textarea>
+                    </div>
+
+                    <div class="flex justify-end">
+                        <button onclick="checkMockAnswer()" class="px-5 py-2.5 bg-gradient-to-r from-purple-500 to-cyan-500 text-slate-950 font-bold rounded-xl hover:brightness-110 flex items-center gap-2 shadow-lg shadow-purple-500/20">
+                            <i class="fa-solid fa-circle-check"></i> 정답 & 필수 키워드 확인하기
+                        </button>
+                    </div>
+
+                    <!-- Reveal Answer Box -->
+                    <div id="mockAnswerReveal" class="bg-slate-900/90 p-4 rounded-xl border border-purple-500/30 space-y-3 hidden">
+                        <h4 class="font-bold text-emerald-400 flex items-center gap-1.5 text-sm">
+                            <i class="fa-solid fa-award"></i> 추천 STAR 모범 답안 Breakdown
+                        </h4>
+                        <div id="mockStarBreakdown" class="space-y-1.5 text-slate-300 text-[11px] pl-3 border-l-2 border-emerald-500/50">
+                            <!-- JS Populated -->
+                        </div>
+
+                        <div class="pt-2 border-t border-slate-800">
+                            <span class="text-slate-400 font-semibold block mb-2 text-xs">✅ 필수 포함 기술 키워드 체크리스트 (내 답변과 비교해보세요):</span>
+                            <div id="mockKeywordsChecklist" class="flex flex-wrap gap-2">
+                                <!-- JS Populated -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB CONTENT 4: EXPERIENCE VAULT -->
+        <section id="content-experience-vault" class="tab-content space-y-4 hidden">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-100 flex items-center gap-2">
+                        <i class="fa-solid fa-database text-cyan-400"></i> 메인터넌스 STAR 역량 데이터베이스
+                    </h2>
+                    <p class="text-xs text-slate-400">설비보전/메인터넌스 면접관이 검증하는 4대 핵심 역량 구조화 카탈로그</p>
+                </div>
+            </div>
+
+            <!-- Experience Categories Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="experienceVaultGrid">
+                <!-- JS Populated -->
+            </div>
+        </section>
+
+        <!-- TAB CONTENT 5: TROUBLESHOOTING DB -->
+        <section id="content-troubleshooting" class="tab-content space-y-4 hidden">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-100 flex items-center gap-2">
+                        <i class="fa-solid fa-wrench text-cyan-400"></i> 면접용 현장 트러블슈팅 DB (3단계 구조)
+                    </h2>
+                    <p class="text-xs text-slate-400">[현상 파악] → [원인 규명] → [조치 및 재발방지] 설비고장 대응 프레임워크</p>
+                </div>
+            </div>
+
+            <!-- Search filter -->
+            <div class="glass-card rounded-xl p-3 flex items-center gap-3">
+                <i class="fa-solid fa-filter text-cyan-400 text-sm"></i>
+                <input type="text" id="troubleSearchInput" oninput="renderTroubleshootingDB()" placeholder="고장 원인, 부품명, 신호 오류 키워드 검색 (예: 노이즈, 로봇, 진공, 밸런스)" class="bg-slate-900 border border-slate-700 text-xs rounded-lg px-3 py-2 text-slate-200 w-full focus:outline-none focus:border-cyan-500">
+            </div>
+
+            <!-- Troubleshooting Interactive Grid -->
+            <div class="space-y-4" id="troubleGrid">
+                <!-- JS Populated -->
+            </div>
+        </section>
+
+        <!-- TAB CONTENT 6: CHECKLIST -->
+        <section id="content-checklist" class="tab-content space-y-4 hidden">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-100 flex items-center gap-2">
+                        <i class="fa-solid fa-list-check text-cyan-400"></i> 메인터넌스 취업 준비 체크리스트
+                    </h2>
+                    <p class="text-xs text-slate-400">학점/생활기록부부터 서류, 트러블슈팅 및 안전수칙까지 완전 정복</p>
+                </div>
+                <div class="flex items-center gap-2 text-xs">
+                    <button onclick="checkAllChecklist(true)" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg border border-slate-700">전체 완료</button>
+                    <button onclick="checkAllChecklist(false)" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg border border-slate-700">전체 해제</button>
+                </div>
+            </div>
+
+            <!-- Checklist Sections -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="checklistContainer">
+                <!-- JS Populated -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal: Company Details & Custom Strategy -->
+    <div id="companyModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm hidden">
+        <div class="glass-card w-full max-w-2xl rounded-2xl p-6 border border-slate-700 shadow-2xl relative max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <button onclick="closeModal('companyModal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-100 w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div id="companyModalContent">
+                <!-- JS injected content -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Add / Edit Application -->
+    <div id="appModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm hidden">
+        <div class="glass-card w-full max-w-lg rounded-2xl p-6 border border-slate-700 shadow-2xl relative">
+            <button onclick="closeModal('appModal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-100 w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3 id="appModalTitle" class="text-lg font-bold text-slate-100 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-pen-to-square text-cyan-400"></i> 새 지원 내역 추가
+            </h3>
+            
+            <form id="appForm" onsubmit="saveApplication(event)" class="space-y-4 text-xs">
+                <input type="hidden" id="appEditId" value="">
+                
+                <div>
+                    <label class="block text-slate-400 mb-1 font-medium">기업명 *</label>
+                    <input type="text" id="formCompany" required placeholder="예: 현대트랜시스" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-cyan-500">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-slate-400 mb-1 font-medium">지원 직무 *</label>
+                        <input type="text" id="formPosition" required placeholder="예: 생산설비 보전" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-cyan-500">
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 mb-1 font-medium">전형 단계 *</label>
+                        <select id="formStatus" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-cyan-500">
+                            <option value="서류 작성 중">서류 작성 중</option>
+                            <option value="서류 제출 완료">서류 제출 완료</option>
+                            <option value="인적성/검사">인적성/검사</option>
+                            <option value="면접 전형">면접 전형</option>
+                            <option value="최종 합격">최종 합격</option>
+                            <option value="불합격">불합격</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-slate-400 mb-1 font-medium">마감일 / 면접일</label>
+                        <input type="text" id="formDeadline" placeholder="예: 11/15 마감" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-cyan-500">
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 mb-1 font-medium">예상 연봉/근무지</label>
+                        <input type="text" id="formSalary" placeholder="예: 6,000만 / 충남 서산" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-cyan-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-slate-400 mb-1 font-medium">핵심 어필 포인트 및 메모</label>
+                    <textarea id="formNotes" rows="3" placeholder="예: PLC 전장배선 경험 강조, 모터 정밀 제어 트러블슈팅 준비" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-cyan-500 custom-scrollbar"></textarea>
+                </div>
+
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('appModal')" class="px-4 py-2 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700">취소</button>
+                    <button type="submit" class="px-4 py-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 font-bold hover:brightness-110">저장하기</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Code -->
+    <script>
+        // -------------------------------------------------------------
+        // APPLICATION STATE & CONSTANTS
+        // -------------------------------------------------------------
+        let state = {
+            applications: [],
+            checklist: {}
+        };
+
+        const JOB_POSTINGS_DATA = {
+            'hyundai-transys': {
+                company: '현대트랜시스',
+                badge: '현대자동차그룹 부품계열사',
+                title: '2026년 파워트레인/시트 생산설비 보전(메인터넌스) 전문대/고졸 채용',
+                dept: '생산본부 설비보전팀 / 메인터넌스 파트',
+                location: '충남 서산공장 (지곡/성연 사업장)',
+                type: '정규직 (수습 3개월 후 자동 전환)',
+                salary: '6,000만 ~ 7,000만 원+ (기본급 4,500만원 내외 + 성과급/교대수당)',
+                shift: '주간 연속 2교대 (1조 06:45~15:30 / 2조 15:30~00:10, 심야근무 없음)',
+                requirements: [
+                    '고등학교 졸업 이상 또는 전문대학교(초대졸) 기계/전기/자동화 관련 학과 졸업(예정)자',
+                    '병역필 또는 면제자로 해외여행에 결격사유가 없는 자',
+                    '고등학교 생활기록부상 출결 성실자 (무단결근 없는 개근 우대)',
+                    '교대근무 및 서산 사업장 상주 근무 가능자'
+                ],
+                preferred: [
+                    '설비보전기능사/산업기사, 전기기능사/산업기사, 생산자동화산업기사 자격증 소지자',
+                    'PLC(MITSUBISHI, LS산전) 제어 및 전장 배선 회로도 해석 가능자',
+                    '자동화 공정 이송 로봇 및 모터/감속기 유지보수 프로젝트 경험자',
+                    '컴퓨터활용능력 및 CAD 도면 작성/해독 우대'
+                ],
+                tasks: [
+                    '변속기/파워트레인 자동화 가공 및 조립 라인 설비 예방보전(PM) 계획 수립 및 실행',
+                    '설비 멈춤(Line Stop) 발생 시 긴급 트러블슈팅 및 기계/전기적 고장 원인 분석',
+                    'PLC 프로그램 수정, 서보 모터 게인 보정 및 센서/밸브 부품 교체',
+                    '설비 개조(Retrofit) 및 라인 효율성 개선 활동 참여'
+                ],
+                process: [
+                    { step: '1단계', name: '서류전형', desc: '고교 생기부 출결, 전공 적합성 및 자소서 평가' },
+                    { step: '2단계', name: 'AI 역량검사 & 인적성', desc: '직무 적성 및 인성 타당성 검사' },
+                    { step: '3단계', name: '1차 실무/전공면접', desc: '전장배선, PLC, 회로해석, 트러블슈팅 질문' },
+                    { step: '4단계', name: '2차 임원면접 & 신검', desc: '조직 적응력, 출결/성실성, 신체검사' },
+                    { step: '5단계', name: '최종입사', desc: '서산공장 수습 입사 및 라인 배치' }
+                ],
+                tip: '현대트랜시스는 야간 근무가 없는 주간 2교대로 워라밸이 최고 수준입니다. 면접 시 "라인스톱 0초를 목표로 빠른 회로 분석과 기계 부하 추적을 수행하겠다"는 성실성과 안전의식을 가장 높게 평가합니다.'
+            },
+            'hl-mando': {
+                company: 'HL만도',
+                badge: 'HL그룹 글로벌 자동차 부품기업',
+                title: '2026년 생산기술 / 설비보전(기술직) 수시 채용공고',
+                dept: '생산기술본부 설비보전그룹',
+                location: '경기 평택(제동), 강원 원주(조향), 전북 익산(현가)',
+                type: '정규직 (기숙사 및 주택자금 지원)',
+                salary: '5,500만 ~ 6,500만 원 (기본급 4,200만원 내외 + 성과급/수당)',
+                shift: '2교대 / 3교대 (사업장 및 라인별 상이)',
+                requirements: [
+                    '전문대(초대졸) 이상 졸업(예정)자 (기계, 전기/전자, 메카트로닉스 공학계열 전공자)',
+                    '전 학점 평균 3.0/4.5 이상인 자',
+                    '해외 출장 및 교대근무에 결격사유가 없는 자'
+                ],
+                preferred: [
+                    '전기산업기사, 설비보전산업기사, 위험물산업기사 자격증 소지자',
+                    '유공압 솔레노이드 밸브, 초음파 세정기, 정밀 기계 메커니즘 이해자',
+                    'AutoCAD/Inventor를 활용한 설비 부품 도면 해석 우대',
+                    'PLC 및 모션 컨트롤러 실습 프로젝트 경험자'
+                ],
+                tasks: [
+                    '제동(Brake), 조향(Steering), 현가(Suspension) 정밀 가공/조립 라인 설비 관리',
+                    '초음파 세정기, 유공압 실린더 및 압력 레귤레이터 예방보전(PM)',
+                    '가공기 정밀 캘리브레이션 및 센서 신호 노이즈 대응',
+                    '설비 부품 내구성 검증 및 고장 이력 DB 관리'
+                ],
+                process: [
+                    { step: '1단계', name: '서류전형', desc: '학점, 전공 관련성 및 경험기술서 검토' },
+                    { step: '2단계', name: '1차 직무/전공면접', desc: '유공압, 전기 기본 지식, 트러블슈팅 사례' },
+                    { step: '3단계', name: '2차 종합면접', desc: '인성, 협업 능력, 기업 가치관 검증' },
+                    { step: '4단계', name: '채용검진', desc: '기능성 체력 및 건강검진' },
+                    { step: '5단계', name: '최종합격', desc: '사업장별(평택/원주/익산) 배치' }
+                ],
+                tip: 'HL만도는 자동차 안전과 직결된 정밀 샤시 부품을 생산하므로 설비 오차 관리가 핵심입니다. 초음파 세정기, 유압 밸브 등 정밀 매커니즘 보전 경험과 PM 체크리스트 수립 경험을 강조하세요.'
+            },
+            'stats-chippac': {
+                company: '스태츠칩팩코리아',
+                badge: '글로벌 Top-tier 반도체 OSAT 기업',
+                title: '2026년 반도체장비 유지보수원 (Maint Technician) 채용',
+                dept: '제조본부 장비기술부 (Maint)',
+                location: '인천 영종도 (운서역 인근)',
+                salary: '4,800만 ~ 5,200만 원 (기본급 4,159만원 + OT/교대수당 별도)',
+                shift: '4조 3교대 / 3조 2교대 (클린룸 상시 교대운용)',
+                requirements: [
+                    '전문대(초대졸) 졸업(예정)자 (전기, 전자, 기계, 반도체 계열 전공자 우대)',
+                    '클린룸(Cleanroom) 방진복 착용 근무 및 24시간 교대근무 가능자',
+                    '고교/전문대 출결 성실자'
+                ],
+                preferred: [
+                    '반도체 후공정(패키징/테스트) 장비 실습 경험자',
+                    '전기/전자 기능사/산업기사 보유자',
+                    'ESD(정전기) 관리 및 클린룸 수칙 숙지자',
+                    '영종도 거주 가능자 또는 기숙사 입주 희망자'
+                ],
+                tasks: [
+                    '반도체 패키징 및 테스트 공정 장비 예방정비(PM) 및 고장 수리(BM)',
+                    'Spin Coater, Wire Bonder, Handler 등 미세 정밀 부품 교체 및 회전 밸런싱',
+                    '센서 및 모터 위치 캘리브레이션(Calibration), 수율 저해 요소 제거',
+                    '클린룸 환경 내 ESD 예방 수칙 및 안전보건 규정 준수'
+                ],
+                process: [
+                    { step: '1단계', name: '서류전형', desc: '출결, 교대근무 적합성 및 자소서 검토' },
+                    { step: '2단계', name: '면접전형(실무/인성)', desc: '클린룸 수칙, 방진복 적응성, 장비 실습 질문' },
+                    { step: '3단계', name: '채용검진', desc: '교대근무 및 방진복 착용 가능 여부 검진' },
+                    { step: '4단계', name: '입사 (3개월 계약)', desc: '3개월 전환 평가 수행 (정규직 전환율 높음)' },
+                    { step: '5단계', name: '정규직 전환', desc: '평가 후 정규직 최종 전환' }
+                ],
+                tip: '3개월 계약직 후 정규직 전환 평가는 "무단 결근 없는 출결 성실성"과 "클린룸 규정 준수"가 핵심입니다. 면접 시 방진복 착용 교대근무에 문제없는 철저한 건강 관리 루틴을 어필하세요.'
+            },
+            'sfa-semicon': {
+                company: 'SFA반도체',
+                badge: 'SFA그룹 반도체 패키징 & 테스트 전문기업',
+                title: '2026년 제조본부 제조기술 Maintenance (설비엔지니어) 채용',
+                dept: '제조본부 장비보전팀',
+                location: '충남 천안 (백석공단 1·2공장)',
+                salary: '4,500만 ~ 5,000만 원 (기본급 3,800만원 내외 + 교대/잔업수당)',
+                shift: '3조 2교대 / 5근 2휴 (Day / Swing / Night)',
+                requirements: [
+                    '전문대(초대졸) 이상 졸업(예정)자 (전기, 전자, 기계, 반도체공학 전공)',
+                    '교대근무 및 천안 백석공단 출퇴근/거주 가능자',
+                    '병역필 또는 면제자'
+                ],
+                preferred: [
+                    '300mm 메인 생산장비 및 반도체 팹(Fab) 실습 경험자',
+                    'SECS/GEM 통신 프로토콜 및 아두이노/전장 노드 제어 경험자',
+                    '설비보전산업기사, 전기산업기사, 무선설비산업기사 자격증 보유자',
+                    '진공 펌프(Dry Pump), Spin Coater 등 반도체 부품 유지보수 경험자'
+                ],
+                tasks: [
+                    '천안 팹 내 반도체 패키징/테스트 양산 생산장비 메인터넌스',
+                    'Spin Coater, Sputter, 이송 로봇 등 오작동 시 긴급 고장 복구(BM)',
+                    '장비-MES 간 SECS/GEM 통신 타임아웃 대응 및 신호 보정',
+                    '정기 PM 주기 관리 및 소모성 부품(O-Ring, 밸브) 교체'
+                ],
+                process: [
+                    { step: '1단계', name: '서류전형', desc: '전공 성적, 자격증 및 장비 실습 경험 서술 평가' },
+                    { step: '2단계', name: 'AI 역량검사', desc: '직무 적응성 및 성향 분석' },
+                    { step: '3단계', name: '1차 실무전공면접', desc: '장비 매커니즘, SECS/GEM 통신, 회로 파싱 질문' },
+                    { step: '4단계', name: '2차 임원면접', desc: '인성, 천안 거주 의지, 조직융화력' },
+                    { step: '5단계', name: '최종합격', desc: '천안 1/2공장 장비보전팀 배치' }
+                ],
+                tip: 'SFA반도체는 천안 팹 내 양산 장비의 빠른 수율 복구를 중시합니다. 300mm 장비 실습이나 아두이노/전장 제어 경험, SECS/GEM 메시지 이해도를 적극 표현하세요.'
+            }
+        };
+
+        const DEFAULT_APPLICATIONS_DATA = [
+            {
+                id: 'app_1',
+                company: 'SFA반도체',
+                position: '설비엔지니어',
+                status: '서류 작성 중',
+                deadline: '11/05 마감',
+                salary: '4,500만~5,000만 / 충남 천안',
+                notes: '300mm 메인 생산장비 실습 경험, SECS/GEM 통신 강조'
+            },
+            {
+                id: 'app_2',
+                company: '현대트랜시스',
+                position: '생산설비 / 메인터넌스',
+                status: '서류 제출 완료',
+                deadline: '11/12 마감',
+                salary: '6,000만~7,000만 / 충남 서산',
+                notes: 'PLC 회로 해석 및 주간 연속 2교대 라인스톱 0초 목표 어필'
+            },
+            {
+                id: 'app_3',
+                company: 'HL만도',
+                position: '생산기술 / 설비보전',
+                status: '면접 전형',
+                deadline: '11/20 면접',
+                salary: '5,500만~6,500만 / 경기 평택',
+                notes: '솔레노이드 밸브 및 초음파 세정기 메커니즘 정비 강조'
+            }
+        ];
+
+        const TARGET_COMPANIES_DATA = [
+            {
+                id: 'hyundai-transys',
+                name: '현대트랜시스',
+                type: '자동차 핵심부품 (현대차그룹)',
+                position: '생산설비 / 메인터넌스',
+                location: '충남 서산 (지곡 / 성연)',
+                salary: '6,000만 ~ 7,000만원+ (영끌)',
+                baseSalary: '기본급 4,500만원 내외 + 성과급/수당 별도',
+                shift: '주간 연속 2교대 (1조 06:45~15:30 / 2조 15:30~00:10)',
+                shiftTag: '심야 근무 없음 (워라밸 최상)',
+                badgeColor: 'cyan',
+                keyFocus: '변속기/파워트레인 자동화 라인 보전, PLC, 전장 배선, 모터/로봇 제어, 긴급 트러블슈팅',
+                strategy: {
+                    point1: '야간 근무가 없는 주간 2교대이므로 체력 관리보다 **"생산 라인 멈춤(Line Stop) 최소화를 위한 빠른 결함 추적 능력"**을 어필하세요.',
+                    point2: '변속기 조립/가공 라인 내 PLC 통신, 가공기 센서 결선, 모터 백래시 대응 경험이 핵심 질문으로 나옵니다.',
+                    essayTip: '고교/전문대 실습 중 장비 고장 시 회로도 해석 및 전장 배선을 수정하여 라인을 정상화한 경험을 3단계로 서술.',
+                    interviewQ: '설비가 비정상적으로 멈췄을 때 전기적 요인과 기계적 요인을 구분하여 점검하는 첫 번째 기준은 무엇인가?'
+                }
+            },
+            {
+                id: 'hl-mando',
+                name: 'HL만도',
+                type: '자동차 샤시/자율주행 부품',
+                position: '생산기술 / 설비보전',
+                location: '경기 평택, 강원 원주, 전북 익산',
+                salary: '5,500만 ~ 6,500만원',
+                baseSalary: '기본급 4,200만원 내외 + 성과급',
+                shift: '2교대 / 3교대 (사업장 및 라인별 상이)',
+                shiftTag: '주택자금 지원 & 기숙사 제공',
+                badgeColor: 'emerald',
+                keyFocus: '제동/조향/현가장치 정밀 설비, 초음파 세정기, 유압/공압, 모터/센서 오작동 대응',
+                strategy: {
+                    point1: '평택(브레이크), 원주(조향), 익산(현가) 중 본인이 희망하는 사업장 및 해당 장비 특성을 명확히 숙지해야 합니다.',
+                    point2: '유압/공압 밸브 제어 및 정밀 세정 부품 유격 관리 등 기계+전기 복합 매커니즘 정비 역량이 강조됩니다.',
+                    essayTip: '초음파 세정기나 진공 펌프 등 유체/파동 기계 부품의 정기 예방보전(PM) 체크리스트 활용 경험 작성.',
+                    interviewQ: '세정기 또는 공압 설비의 압력이 갑자기 떨어질 때 가스 누설 외 전기 센서 신호 이상을 확인하는 방법은?'
+                }
+            },
+            {
+                id: 'stats-chippac',
+                name: '스태츠칩팩코리아',
+                type: '글로벌 반도체 OSAT (후공정)',
+                position: '반도체 장비 메인터넌스',
+                location: '인천 영종도 (운서동)',
+                salary: '4,800만 ~ 5,200만원',
+                baseSalary: '기본급 4,159만원 + OT/교대수당 별도',
+                shift: '4조 3교대 / 3조 2교대 (Fab 상시 운용)',
+                shiftTag: '3개월 전환 평가 후 정규직',
+                badgeColor: 'blue',
+                keyFocus: '패키징/테스트 장비 maintenance, 클린룸 방진복 착용, PM 수열 관리, 정밀 보정',
+                strategy: {
+                    point1: '3개월 계약직 후 전환 평가는 **"무단 결근 없는 출결 성실성"**과 **"클린룸(Cleanroom) 수칙 준수"**가 80% 이상의 비중입니다.',
+                    point2: '방진복 착용 상태에서의 장시간 교대근무 적응력과 미세 장비 파라미터 세팅 정확도를 강점으로 제시하세요.',
+                    essayTip: '고등학교 생활기록부 출결 개근 강조 및 교대근무에 문제없는 건강한 체력 관리 루틴 기재.',
+                    interviewQ: '교대근무 시 이전 조에서 미처 해결하지 못한 교정(Calibration) 오류를 인수계계받을 때 가장 먼저 체크할 사항은?'
+                }
+            },
+            {
+                id: 'sfa-semicon',
+                name: 'SFA반도체',
+                type: '반도체 조립 및 패키징 OSAT',
+                position: '설비엔지니어 (메인터넌스)',
+                location: '충남 천안 (백석공단 1·2공장)',
+                salary: '4,500만 ~ 5,000만원',
+                baseSalary: '기본급 3,800만원 내외 + 교대/잔업수당',
+                shift: '3조 2교대 / 5근 2휴',
+                shiftTag: '300mm 메인 라인 실습 경험 우대',
+                badgeColor: 'purple',
+                keyFocus: 'Spin Coater, 진공 펌프, SECS/GEM 통신 프로토콜, 웨이퍼 이송 로봇, BM/PM',
+                strategy: {
+                    point1: '천안 팹 내 메인 양산 장비(Spin Coater, Sputter, 이송 로봇)의 센서 데이터 송수신(SECS/GEM) 이해도를 높게 평가합니다.',
+                    point2: '아두이노/전장 실습을 통한 모터 정밀 제어 및 노이즈 보정 경험을 반도체 장비 보전과 연결하세요.',
+                    essayTip: '300mm 메인 생산장비 실습 중 오차 모니터링 후 파라미터를 미세 보정한 실제 프로젝트 사례 강조.',
+                    interviewQ: 'SECS/GEM 통신 중 상위 시스템과 장비 간 메시지 손실이 발생할 경우 하드웨어 관점에서 무엇을 확인하겠는가?'
+                }
+            }
+        ];
+
+        const COMPANY_INTERVIEW_DATA = {
+            'hyundai-transys': {
+                company: '현대트랜시스',
+                pitch: `[1분 자기소개 예시 - 현대트랜시스 설비보전]
+안녕하십니까, 현대트랜시스 파워트레인 생산설비의 무결점 가동을 책임질 지원자 [이름]입니다. 
+전문대학교에서 기계·전기 공학을 전공하며 PLC 회로 도면 해석 및 자동화 라인 전장 배선 실습을 이수하였습니다.
+
+가공 실습 중 센서 신호 노이즈로 인한 라인 정지 현상이 발생했을 때, 전기 회로도와 멀티미터 통전 시험을 통해 차폐선 유무를 확인하고 차폐 케이블로 재배선하여 정지 시간을 30% 단축한 경험이 있습니다.
+
+현대트랜시스의 주간 2교대 자동화 변속기 생산라인에서 라인스톱(Line Stop) 0초를 목표로, 빠른 트러블슈팅과 철저한 예방보전(PM)을 수행하는 설비보전 전문가가 되겠습니다!`,
+                questions: [
+                    {
+                        q: '자동화 라인스톱(Line Stop)이 발생했을 때 가장 먼저 취할 긴급 대응 절차는?',
+                        star: {
+                            S: '자동화 가공 라인에서 서보 모터 과부하 알람이 발생하여 라인이 비정상 멈춘 상황.',
+                            T: '생산 차질 최소화를 위해 5분 이내에 기계적 구동부 고착인지 전기 신호 오류인지 원인을 즉시 진단해야 했음.',
+                            A: '1단계로 LOTO 안전 규정을 준수하며 설비 제어반 PLC I/O 신호 상태 및 모터 토크 값을 모니터링했습니다. 2단계로 구동부 체인 유격 및 감속기 백래시를 점검하여 이물질 끼임에 의한 기계적 부하임을 확인하고 이물질 제거 및 재타이트닝을 실시했습니다.',
+                            R: '10분 이내 라인 재가동 완료 및 일일 PM 점검 리스트에 이물질 청소 가이드라인 신설.'
+                        },
+                        keywords: ['LOTO 안전조치', 'PLC I/O 모니터링', '기계/전기 원인 분리', '백래시/유격 점검', '재발방지 PM']
+                    },
+                    {
+                        q: '서보 모터 구동축에서 이상 진동 및 과부하 알람이 지속될 때 점검 순서는?',
+                        star: {
+                            S: '변속기 체결 공정 이송 로봇 구동축에서 정지 위치 오버슈트 및 앰프 과부하 알람 발생.',
+                            T: '모터 교체 전 기계적 유격 및 모터 드라이버 파라미터를 점검하여 불필요한 비용과 다운타임 방지.',
+                            A: '모터 커플링 마모 상태 및 감속기 백래시를 마이크로 게이지로 측정하고, 서보 앰프 게인(Gain) 파라미터를 보정하여 진동을 상쇄시켰습니다.',
+                            R: '위치 오차 ±0.1mm 이내 정밀도 회복 및 모터 정비 시간 50% 절감.'
+                        },
+                        keywords: ['모터 커플링', '감속기 백래시', '서보 앰프 게인 보정', '오버슈트 차단', '위치 정밀도']
+                    }
+                ]
+            },
+            'hl-mando': {
+                company: 'HL만도',
+                pitch: `[1분 자기소개 예시 - HL만도 설비보전]
+안녕하십니까, HL만도의 제동·조향·현가장치 정밀 생산라인을 지킬 지원자 [이름]입니다.
+저는 유공압 밸브 제어 및 초음파 세정기 메커니즘을 이수하고, 설비 고장 원인을 3단계로 추적하는 정비 실습 경험을 쌓았습니다.
+
+초음파 세정기 정비 실습 중 진동자 주파수 감쇄로 세정 잔류물이 발생했을 때, 발진기 보드 접촉 부식 파트를 교체하고 공압 레귤레이터 압력을 정밀 조정하여 세정 효율을 20% 높였습니다.
+
+HL만도의 정밀 샤시 부품 생산라인에서 예방보전(PM)과 정밀 캘리브레이션을 통해 품질 불량 제로화에 앞장서겠습니다!`,
+                questions: [
+                    {
+                        q: '공압 솔레노이드 밸브 불량으로 유압/공압 실린더가 동작하지 않을 때 점검 단계는?',
+                        star: {
+                            S: '브레이크 캘리퍼 가공 라인에서 공압 실린더 전진 신호 불통으로 설비 정지.',
+                            T: '전기적 코일 문제와 공압 솔레노이드 스풀 고착 원인을 신속 구분해야 함.',
+                            A: '1단계로 DC 24V 인가 전압 및 코일 저항을 측정하여 전기 신호 이상 유무를 확인했습니다. 2단계로 밸브 수동 수동 버튼(Manual Override)을 눌러 메카니컬 스풀(Spool) 고착을 체크하고, 3단계로 에어 레귤레이터 압력 및 O-Ring 누설을 점검했습니다.',
+                            R: '스풀 이물질 제거 후 정상 작동, 정비 매뉴얼에 수동 오버라이드 점검 단계 추가.'
+                        },
+                        keywords: ['DC 24V 코일 저항', 'Manual Override', '스풀(Spool) 고착', '에어 레귤레이터', 'O-Ring 누설']
+                    }
+                ]
+            },
+            'stats-chippac': {
+                company: '스태츠칩팩코리아',
+                pitch: `[1분 자기소개 예시 - 스태츠칩팩코리아 장비보전]
+안녕하십니까, 스태츠칩팩코리아의 반도체 후공정 메인 생산장비를 담당할 지원자 [이름]입니다.
+저는 클린룸(Cleanroom) 환경 규정과 ESD 정전기 방지 수칙을 숙지하고, 팹 내 메인 장비의 파라미터 정밀 보정 실습을 완수했습니다.
+
+Spin Coater 조립 실습 중 회전축 유격으로 진동 및 미세 오염이 발생했을 때, 회전 밸런싱 모듈을 재정렬하고 타이트닝 점검을 시행하여 코팅 균일도를 높였습니다.
+
+스태츠칩팩코리아의 3교대 팹 라인에서 철저한 출결 성실성과 교대근무 적응력을 바탕으로 설비 수율 향상에 기여하겠습니다!`,
+                questions: [
+                    {
+                        q: '클린룸(Cleanroom) 환경 내에서 장비 정비(BM) 시 일반 공정과 다른 핵심 유의사항은?',
+                        star: {
+                            S: '패키징 팹 내부 Spin Coater 모터 정비 요청 상황.',
+                            T: '파티클 유입 및 ESD 정전기 손상을 방지하며 클린룸 진입 규정을 100% 준수해야 함.',
+                            A: 'ESD 접지 밴드 착용 상태를 확인하고, 정비 도구를 IPA 전용 세정포로 디스파티클 처리했습니다. 부품 교체 시 챔버 개방 시간을 최소화하고, 정비 완료 후 에어 샤워 및 정전기 측정기로 감전/ESD 예방 조치를 완료했습니다.',
+                            R: '팹 파티클 오염 제로 및 안전 규정 완벽 준수.'
+                        },
+                        keywords: ['ESD 접지 밴드', 'IPA 디스파티클', '클린룸 진입 규정', '챔버 개방 최소화', '에어 샤워']
+                    }
+                ]
+            },
+            'sfa-semicon': {
+                company: 'SFA반도체',
+                pitch: `[1분 자기소개 예시 - SFA반도체 설비엔지니어]
+안녕하십니까, SFA반도체 천안 팹의 핵심 장비 메인터넌스를 책임질 지원자 [이름]입니다.
+저는 300mm 메인 생산장비 양산 실습 및 SECS/GEM 통신 메시지 파싱 프로젝트를 통해 반도체 하드웨어와 제어 시스템 이해도를 갖추었습니다.
+
+웨이퍼 이송 로봇 위치 제어 실습 중 정지 오차가 발생했을 때, 아두이노/전장 노드 가감속 알고리즘 파라미터를 보정하여 위치 정밀도를 ±0.2mm 이내로 향상시킨 경험이 있습니다.
+
+SFA반도체의 패키징 및 테스트 생산라인에서 빠른 트러블슈팅과 장비 개조(Retrofit) 능력을 발휘하겠습니다!`,
+                questions: [
+                    {
+                        q: 'SECS/GEM 통신 장애가 발생하여 상위 Host와 장비 간 데이터 송수신이 끊겼을 때 하드웨어 대응은?',
+                        star: {
+                            S: '천안 팹 테스트 장비와 MES 상위 시스템 간 통신 타임아웃 알람 발생.',
+                            T: '소프트웨어 통신 끊김인지 LAN/RS-232 물리 케이블 결선 문제인지 원인 추적.',
+                            A: '장비 통신 인터페이스 카드의 LED 상태 및 Ethernet 케이블 결선 통전 상태를 체크했습니다. 신호 노이즈 차폐 라인을 재점검하고 통신 드라이버 재시작 및 핑(Ping) 테스트를 수행하여 상위 통신 메시지(S1F1) 동기화를 완료했습니다.',
+                            R: '통신 장애 복구 및 MES 자동 실시간 데이터 수집 재개.'
+                        },
+                        keywords: ['SECS/GEM', 'RS-232/Ethernet 통전', 'S1F1 메시지 동기화', '노이즈 차폐', 'MES 호스트']
+                    }
+                ]
+            }
+        };
+
+        const FLASHCARDS_DATA = [
+            {
+                category: '모터 & 구동부',
+                q: '서보 모터(Servo)와 스텝 모터(Stepper)의 차이 및 점검 포인트는?',
+                a: '스텝 모터는 개회로(Open-loop) 제어로 구조가 단순하나 고속 회전 시 탈조(Step-out)가 발생합니다. 서보 모터는 엔코더 피드백 closed-loop 제어로 정밀 위치 제어가 가능합니다. 정비 시 엔코더 커넥터 결선, 감속기 백래시(Backlash), 커플링 마모 상태를 정기 점검해야 합니다.'
+            },
+            {
+                category: '센서 & 노이즈',
+                q: '센서 신호 노이즈(EMI) 원인과 해결 방안(Shielding)은?',
+                a: '고전압 모터 케이블 인근의 센서 신호선에 유도 기전력 노이즈가 유입되어 신호 튐 현상이 발생합니다. 해결책: ① 차폐 케이블(Shield Cable) 사용, ② 차폐선을 제어반 FG(Frame Ground)에 1점 접지, ③ 노이즈 필터 부착 및 트위스트 페어선 적용.'
+            },
+            {
+                category: '유공압 & 밸브',
+                q: '솔레노이드 밸브(Solenoid Valve) 동작 불량 시 3단계 점검 순서는?',
+                a: '1단계(전기): 코일 인가 전압(DC 24V) 및 저항 측정.\n2단계(기계): 밸브 수동 수동 버튼(Manual Override)을 눌러 메카니컬 스풀(Spool) 고착 여부 확인.\n3단계(공압): 에어 레귤레이터 공급 압력 및 O-Ring 누설 점검.'
+            },
+            {
+                category: '진공 & 클린룸',
+                q: '드라이 펌프(Dry Pump) 메인터넌스 유의점은?',
+                a: '부식성 공정 가스 부산물이 누적되면 펌프 락(Lock)이 발생합니다. 예방을 위해 N2 Purge 유량을 상시 모니터링해야 하며, O-Ring 교체 시 IPA 세정 후 진공 구리스를 얇게 도포하고 마이크로 볼트 타이트닝을 준수해야 합니다.'
+            },
+            {
+                category: '통신 & 안전규정',
+                q: 'SECS/GEM 및 LOTO/ESD 개념 정리',
+                a: 'SECS/GEM: 반도체 장비와 MES 호스트 간 표준 데이터 통신 규격.\nLOTO(Lock-Out Tag-Out): 정비 작업 전 전원/유공압 밸브를 차단하고 개인 자물쇠 및 경고 표지판을 부착하는 안전 수칙.\nESD: 클린룸 정전기 방지를 위한 접지 밴드 및 방진복 착용 규정.'
+            }
+        ];
+
+        const EXPERIENCE_VAULT_DATA = [
+            {
+                title: '1. 하드웨어 조립 & 전장 배선',
+                icon: 'fa-screwdriver-wrench',
+                color: 'cyan',
+                items: [
+                    { name: '진공 펌프 예지보존 시스템', desc: '회로 전장 배선 및 하드웨어 조립 주도, 멀티미터 통전 시험을 통한 신호 무결성 검증' },
+                    { name: 'Spin Coater 장비 제작', desc: '재오염 방지 기계 구조 설계 및 타이트닝 점검, 회전축 밸런싱 모듈 재정렬' }
+                ]
+            },
+            {
+                title: '2. 장비 파라미터 튜닝 & 양산 실습',
+                icon: 'fa-sliders',
+                color: 'emerald',
+                items: [
+                    { name: '300mm 메인 생산장비 실습', desc: '양산 실습 중 공정 파라미터 미세 보정 및 센서 오차 모니터링' },
+                    { name: 'Cleanroom 팹 라인 운용', desc: 'Photo/Etch/Sputter/CMP 장비 파라미터 세팅 및 이상 발생 시 긴급 수율 조치' }
+                ]
+            },
+            {
+                title: '3. 센서 데이터 수집 & 로봇 제어',
+                icon: 'fa-robot',
+                color: 'amber',
+                items: [
+                    { name: '이송 로봇 주행 & 트러블슈팅', desc: '위치 오차 발생 시 서보 모터 가감속 알고리즘 및 앰프 게인 파라미터 재설정' },
+                    { name: 'SECS/GEM 통신 프로토콜', desc: 'SECS-I/II 메시지 파싱 및 장비-Host 간 실시간 신호 타임아웃 대응' }
+                ]
+            },
+            {
+                title: '4. 설비 구조 분석 & 개선 (Retrofit)',
+                icon: 'fa-chart-line',
+                color: 'purple',
+                items: [
+                    { name: '초음파 세정기 메커니즘 분석', desc: '발진기/진동자 부식 파트 교체 및 유량 노즐 분사 압력 정밀 재설정' },
+                    { name: '공압 레귤레이터 & 밸브 개선', desc: 'O-Ring 열화 방지 마이크로 타이트닝 가이드 수립' }
+                ]
+            }
+        ];
+
+        const TROUBLESHOOTING_DATA = [
+            {
+                id: 'tb_1',
+                title: '자동화 라인 서보 모터 과부하 및 이상 진동 알람',
+                category: '모터/구동부',
+                symptom: '이송 로봇 구동축에서 정지 위치 오버슈트 및 앰프 과부하 알람 발생으로 라인스톱.',
+                cause: '감속기 백래시(Backlash) 증가 및 서보 앰프 위치 게인(Gain) 설정 오차.',
+                action: '마이크로 게이지로 백래시 측정 후 커플링 재타이트닝 및 서보 앰프 게인 파라미터 보정 완료.'
+            },
+            {
+                id: 'tb_2',
+                title: '공압 실린더 전진 신호 불통 및 솔레노이드 밸브 고착',
+                category: '유공압/밸브',
+                symptom: '가공 라인 유입 공정에서 공압 실린더 미동작으로 장비 대기 알람 발생.',
+                cause: '솔레노이드 밸브 내부 스풀(Spool) 이물질 고착 및 DC 24V 코일 접촉 불량.',
+                action: '수동 버튼(Manual Override)으로 스풀 고착 해제, 코일 인가 전압 확인 후 세정 조치.'
+            },
+            {
+                id: 'tb_3',
+                title: '센서 신호 노이즈(EMI) 유입으로 인한 모터 위치 튐 현상',
+                category: '센서/전장',
+                symptom: '근접 센서 감지 신호가 불규칙하게 튀어 설비 오작동 알람 빈발.',
+                cause: '고전압 동력선과 센서 신호선 혼재 배선으로 유도 기전력 노이즈 유입.',
+                action: '차폐 케이블(Shield Cable) 적용, 제어반 FG(Frame Ground) 1점 접지 완료.'
+            },
+            {
+                id: 'tb_4',
+                title: '진공 펌프(Dry Pump) 진공도 저하 및 챔버 Leak',
+                category: '진공/팹설비',
+                symptom: 'Sputter 챔버 목표 진공도(10^-6 Torr) 도달 시간 지연.',
+                cause: '플랜지 Connection O-Ring 열화 및 공정 가스 부산물 고착.',
+                action: 'N2 Purge 유량 상태 확인 후 O-Ring 신품 교체 및 진공 구리스 정량 도포.'
+            }
+        ];
+
+        const DEFAULT_CHECKLIST_DATA = {
+            'chk_1': true,
+            'chk_2': true,
+            'chk_3': false,
+            'chk_4': false,
+            'chk_5': true,
+            'chk_6': false,
+            'chk_7': false,
+            'chk_8': true,
+            'chk_9': false
+        };
+
+        const CHECKLIST_GROUPS = [
+            {
+                title: '1. 서류 및 스펙 기초',
+                icon: 'fa-file-invoice',
+                items: [
+                    { id: 'chk_1', text: '고등학교 생활기록부 (개근/출결 성실성 입증)' },
+                    { id: 'chk_2', text: '전문대 전공 성적증명서 (기계/전기/자동화)' },
+                    { id: 'chk_3', text: '설비보전/전기/생산자동화 자격증 정리' },
+                    { id: 'chk_4', text: '자소서 3단계 트러블슈팅 STAR 구조화' }
+                ]
+            },
+            {
+                title: '2. 하드웨어 & 전장 역량',
+                icon: 'fa-screwdriver-wrench',
+                items: [
+                    { id: 'chk_5', text: 'PLC 회로도 해석 및 I/O 맵 매핑 실습' },
+                    { id: 'chk_6', text: '센서 신호 노이즈 차폐(Shielding) 원리 숙지' },
+                    { id: 'chk_7', text: '솔레노이드 밸브 & 유공압 레귤레이터 점검법' }
+                ]
+            },
+            {
+                title: '3. 현장 안전 & 팹 규정',
+                icon: 'fa-shield-halved',
+                items: [
+                    { id: 'chk_8', text: 'LOTO (Lock-Out Tag-Out) 정비 안전 수칙' },
+                    { id: 'chk_9', text: '클린룸(Cleanroom) ESD 정전기 방지 규정' }
+                ]
+            }
+        ];
+
+        // -------------------------------------------------------------
+        // INITIALIZATION & TAB CONTROLS
+        // -------------------------------------------------------------
+        let currentPrepCompany = 'hyundai-transys';
+        let currentJobPostingCompany = 'hyundai-transys';
+        let currentAppFilter = '전체';
+
+        function initData() {
+            // Load Date
+            const today = new Date();
+            const dateStr = `${today.getFullYear()}.${String(today.getMonth() + 1).padStart(2, '0')}.${String(today.getDate()).padStart(2, '0')}`;
+            const dateElem = document.getElementById('currentDateDisplay');
+            if (dateElem) dateElem.innerText = dateStr;
+
+            // Load Applications
+            const savedApps = localStorage.getItem('maint_apps');
+            if (savedApps) {
+                try { state.applications = JSON.parse(savedApps); } catch(e) { state.applications = [...DEFAULT_APPLICATIONS_DATA]; }
+            } else {
+                state.applications = [...DEFAULT_APPLICATIONS_DATA];
+                saveAppsToStorage();
+            }
+
+            // Load Checklist
+            const savedChecklist = localStorage.getItem('maint_checklist');
+            if (savedChecklist) {
+                try { state.checklist = JSON.parse(savedChecklist); } catch(e) { state.checklist = {...DEFAULT_CHECKLIST_DATA}; }
+            } else {
+                state.checklist = {...DEFAULT_CHECKLIST_DATA};
+                saveChecklistToStorage();
+            }
+
+            // Render Components
+            renderTargetCompanies();
+            renderJobPostings();
+            renderAppsTable();
+            renderPrepSection();
+            renderFlashcards();
+            renderExperienceVault();
+            renderTroubleshootingDB();
+            renderChecklist();
+            updateStats();
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-slate-800', 'text-cyan-400', 'border-t', 'border-x', 'border-slate-700');
+                btn.classList.add('text-slate-400', 'hover:text-slate-200', 'hover:bg-slate-900');
+            });
+
+            const targetContent = document.getElementById(`content-${tabId}`);
+            if (targetContent) targetContent.classList.remove('hidden');
+
+            const targetBtn = document.getElementById(`tab-${tabId}`);
+            if (targetBtn) {
+                targetBtn.classList.remove('text-slate-400', 'hover:text-slate-200', 'hover:bg-slate-900');
+                targetBtn.classList.add('bg-slate-800', 'text-cyan-400', 'border-t', 'border-x', 'border-slate-700');
+            }
+        }
+
+        // -------------------------------------------------------------
+        // RENDER & ACTION FUNCTIONS
+        // -------------------------------------------------------------
+        function renderTargetCompanies() {
+            const grid = document.getElementById('targetCompaniesGrid');
+            if (!grid) return;
+
+            grid.innerHTML = TARGET_COMPANIES_DATA.map(comp => `
+                <div onclick="openCompanyModal('${comp.id}')" class="glass-card glass-card-hover rounded-2xl p-5 border border-slate-800 cursor-pointer flex flex-col justify-between space-y-4">
+                    <div>
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-${comp.badgeColor}-500/10 text-${comp.badgeColor}-400 border border-${comp.badgeColor}-500/20">
+                                ${comp.type}
+                            </span>
+                            <span class="text-[11px] font-bold text-cyan-400 bg-slate-900 px-2 py-0.5 rounded border border-slate-800">
+                                <i class="fa-solid fa-chevron-right text-[10px]"></i> 상세 전략
+                            </span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-100 mt-2">${comp.name}</h3>
+                        <p class="text-xs text-slate-400">${comp.position} | ${comp.location}</p>
+                    </div>
+
+                    <div class="space-y-2 bg-slate-900/80 p-3 rounded-xl border border-slate-800/80 text-xs">
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">예상 연봉:</span>
+                            <span class="font-bold text-emerald-400">${comp.salary}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">근무 형태:</span>
+                            <span class="font-bold text-slate-200">${comp.shift}</span>
+                        </div>
+                    </div>
+
+                    <p class="text-[11px] text-slate-300 line-clamp-2">
+                        <strong class="text-cyan-400">핵심 포인트:</strong> ${comp.keyFocus}
+                    </p>
+                </div>
+            `).join('');
+        }
+
+        function renderAppsTable() {
+            const tbody = document.getElementById('appsTableBody');
+            if (!tbody) return;
+
+            const filtered = currentAppFilter === '전체' 
+                ? state.applications 
+                : state.applications.filter(a => a.status === currentAppFilter);
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="p-8 text-center text-slate-500">
+                            등록된 지원 현황 내역이 없습니다. '지원 기업 추가' 버튼을 눌러 추가해보세요.
+                        </td>
+                    </tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(app => {
+                let statusBadgeClass = 'bg-slate-800 text-slate-300 border-slate-700';
+                if (app.status === '서류 제출 완료') statusBadgeClass = 'bg-blue-950/80 text-blue-400 border-blue-800/60';
+                if (app.status === '인적성/검사') statusBadgeClass = 'bg-purple-950/80 text-purple-400 border-purple-800/60';
+                if (app.status === '면접 전형') statusBadgeClass = 'bg-amber-950/80 text-amber-400 border-amber-800/60';
+                if (app.status === '최종 합격') statusBadgeClass = 'bg-emerald-950/80 text-emerald-400 border-emerald-800/60';
+                if (app.status === '불합격') statusBadgeClass = 'bg-rose-950/80 text-rose-400 border-rose-800/60';
+
+                return `
+                    <tr class="hover:bg-slate-900/50 transition">
+                        <td class="p-3.5">
+                            <div class="font-bold text-slate-100">${app.company}</div>
+                            <div class="text-[11px] text-slate-400">${app.position}</div>
+                        </td>
+                        <td class="p-3.5">
+                            <span class="px-2.5 py-1 rounded-full text-[11px] font-semibold border ${statusBadgeClass}">
+                                ${app.status}
+                            </span>
+                        </td>
+                        <td class="p-3.5 text-slate-300">${app.deadline || '-'}</td>
+                        <td class="p-3.5 text-slate-300">${app.salary || '-'}</td>
+                        <td class="p-3.5 text-slate-400 max-w-xs truncate">${app.notes || '-'}</td>
+                        <td class="p-3.5 text-center">
+                            <div class="flex items-center justify-center gap-1.5">
+                                <button onclick="openEditAppModal('${app.id}')" class="p-1.5 text-slate-400 hover:text-cyan-400 transition" title="수정">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                                <button onclick="deleteApplication('${app.id}')" class="p-1.5 text-slate-400 hover:text-rose-400 transition" title="삭제">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function filterApps(status) {
+            currentAppFilter = status;
+            document.querySelectorAll('.app-filter-btn').forEach(btn => {
+                if (btn.innerText.includes(status) || (status === '전체' && btn.innerText.includes('전체보기'))) {
+                    btn.className = 'app-filter-btn px-3 py-1.5 rounded-lg bg-slate-800 text-cyan-400 border border-slate-700 font-medium';
+                } else {
+                    btn.className = 'app-filter-btn px-3 py-1.5 rounded-lg bg-slate-900 text-slate-400 border border-slate-800 hover:text-slate-200';
+                }
+            });
+            renderAppsTable();
+        }
+
+        function selectPrepCompany(compId) {
+            currentPrepCompany = compId;
+            document.querySelectorAll('.prep-comp-btn').forEach(btn => {
+                btn.classList.remove('bg-cyan-500/20', 'text-cyan-300', 'border-cyan-500/40');
+                btn.classList.add('bg-slate-900', 'text-slate-400', 'border-slate-800');
+            });
+
+            const activeBtn = document.getElementById(`prep-btn-${compId}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-slate-900', 'text-slate-400', 'border-slate-800');
+                activeBtn.classList.add('bg-cyan-500/20', 'text-cyan-300', 'border-cyan-500/40');
+            }
+
+            renderPrepSection();
+        }
+
+        function selectJobPostingCompany(compId) {
+            currentJobPostingCompany = compId;
+            document.querySelectorAll('.jp-comp-btn').forEach(btn => {
+                btn.classList.remove('bg-cyan-500/20', 'text-cyan-300', 'border-cyan-500/40');
+                btn.classList.add('bg-slate-900', 'text-slate-400', 'border-slate-800');
+            });
+
+            const activeBtn = document.getElementById(`jp-btn-${compId}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-slate-900', 'text-slate-400', 'border-slate-800');
+                activeBtn.classList.add('bg-cyan-500/20', 'text-cyan-300', 'border-cyan-500/40');
+            }
+
+            renderJobPostings();
+        }
+
+        function renderJobPostings() {
+            const container = document.getElementById('jobPostingDetailContainer');
+            if (!container) return;
+
+            const jp = JOB_POSTINGS_DATA[currentJobPostingCompany];
+            if (!jp) return;
+
+            container.innerHTML = `
+                <!-- Main Job Posting Summary Header -->
+                <div class="glass-card rounded-2xl p-6 border border-slate-800 space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs font-bold px-2.5 py-1 rounded-md bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+                                    ${jp.badge}
+                                </span>
+                                <span class="text-xs font-bold px-2.5 py-1 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                                    ${jp.type}
+                                </span>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-100 mt-2">${jp.title}</h3>
+                            <p class="text-xs text-slate-400 mt-1"><i class="fa-solid fa-sitemap mr-1"></i> ${jp.dept} | <i class="fa-solid fa-location-dot mr-1"></i> ${jp.location}</p>
+                        </div>
+
+                        <div class="flex flex-wrap sm:flex-col items-start sm:items-end gap-2">
+                            <button onclick="addCompanyToTracker('${jp.company}', '생산설비/메인터넌스', '${jp.salary.split(' ')[0]} / ${jp.location.split(' ')[0]}')" class="px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 font-bold rounded-xl text-xs hover:brightness-110 flex items-center gap-1.5 shadow-lg shadow-cyan-500/20">
+                                <i class="fa-solid fa-plus"></i> 지원 트래커에 등록
+                            </button>
+                            <button onclick="goToCompanyInterviewPrep('${currentJobPostingCompany}')" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-slate-700 rounded-xl font-medium text-xs flex items-center gap-1.5">
+                                <i class="fa-solid fa-user-ninja text-cyan-400"></i> 이 기업 면접자료 바로가기
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Key Conditions Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
+                        <div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800">
+                            <strong class="text-slate-400 block mb-1"><i class="fa-solid fa-sack-dollar text-emerald-400 mr-1"></i> 예상 연봉 (초대졸 신입 기준)</strong>
+                            <p class="font-bold text-emerald-400 text-sm">${jp.salary}</p>
+                        </div>
+                        <div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800">
+                            <strong class="text-slate-400 block mb-1"><i class="fa-solid fa-clock text-amber-400 mr-1"></i> 근무 형태 & 교대 방식</strong>
+                            <p class="font-bold text-slate-200 text-sm">${jp.shift}</p>
+                        </div>
+                        <div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800 sm:col-span-2 lg:col-span-1">
+                            <strong class="text-slate-400 block mb-1"><i class="fa-solid fa-building-user text-cyan-400 mr-1"></i> 근무지 & 사업장 정보</strong>
+                            <p class="font-bold text-slate-200 text-sm">${jp.location}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2-Column Details: Requirements vs Preferred -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Essential Qualifications -->
+                    <div class="glass-card rounded-2xl p-5 border border-slate-800 space-y-3">
+                        <h4 class="text-sm font-bold text-slate-100 flex items-center gap-2 border-b border-slate-800 pb-2">
+                            <i class="fa-solid fa-user-check text-cyan-400"></i> 필수 지원 자격요건
+                        </h4>
+                        <ul class="space-y-2 text-xs text-slate-300">
+                            ${jp.requirements.map(req => `
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-check text-cyan-400 text-[10px] mt-1"></i>
+                                    <span>${req}</span>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+
+                    <!-- Preferred Qualifications & Certs -->
+                    <div class="glass-card rounded-2xl p-5 border border-slate-800 space-y-3">
+                        <h4 class="text-sm font-bold text-slate-100 flex items-center gap-2 border-b border-slate-800 pb-2">
+                            <i class="fa-solid fa-award text-emerald-400"></i> 우대 사항 및 보유 자격증
+                        </h4>
+                        <ul class="space-y-2 text-xs text-slate-300">
+                            ${jp.preferred.map(pref => `
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-star text-emerald-400 text-[10px] mt-1"></i>
+                                    <span>${pref}</span>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Job Description (JD) -->
+                <div class="glass-card rounded-2xl p-5 border border-slate-800 space-y-3">
+                    <h4 class="text-sm font-bold text-slate-100 flex items-center gap-2 border-b border-slate-800 pb-2">
+                        <i class="fa-solid fa-wrench text-amber-400"></i> 주요 담당 업무 (Job Description)
+                    </h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                        ${jp.tasks.map(task => `
+                            <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800 flex items-start gap-2">
+                                <i class="fa-solid fa-gears text-amber-400 text-xs mt-0.5"></i>
+                                <span class="text-slate-200 leading-relaxed">${task}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <!-- Selection Process Steps -->
+                <div class="glass-card rounded-2xl p-5 border border-slate-800 space-y-3">
+                    <h4 class="text-sm font-bold text-slate-100 flex items-center gap-2 border-b border-slate-800 pb-2">
+                        <i class="fa-solid fa-diagram-project text-purple-400"></i> 채용 전형 절차 (Selection Process)
+                    </h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-5 gap-2 text-xs">
+                        ${jp.process.map(p => `
+                            <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800 text-center space-y-1">
+                                <span class="text-[10px] font-bold text-purple-400 block">${p.step}</span>
+                                <strong class="text-slate-100 block font-bold">${p.name}</strong>
+                                <p class="text-[11px] text-slate-400 leading-tight">${p.desc}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <!-- Recruiter's Tip Box -->
+                <div class="glass-card rounded-2xl p-5 border border-cyan-500/30 bg-cyan-950/20 space-y-2">
+                    <h4 class="text-xs font-bold text-cyan-400 flex items-center gap-1.5 uppercase">
+                        <i class="fa-solid fa-lightbulb"></i> 인사담당자 / 합격자 채용 팁 (Recruiter's Guide)
+                    </h4>
+                    <p class="text-xs text-slate-200 leading-relaxed">${jp.tip}</p>
+                </div>
+            `;
+        }
+
+        function renderPrepSection() {
+            const data = COMPANY_INTERVIEW_DATA[currentPrepCompany];
+            if (!data) return;
+
+            document.getElementById('pitchCompanyTitle').innerText = data.company;
+            document.getElementById('pitchScriptText').innerText = data.pitch;
+
+            const questionsContainer = document.getElementById('companyQuestionsContainer');
+            questionsContainer.innerHTML = data.questions.map((qObj, idx) => `
+                <div class="glass-card rounded-2xl p-5 border border-slate-800 space-y-3">
+                    <div class="flex items-start justify-between gap-2">
+                        <h4 class="text-sm font-bold text-slate-100 flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-full bg-cyan-500/20 text-cyan-400 text-xs flex items-center justify-center font-bold">Q${idx+1}</span>
+                            ${qObj.q}
+                        </h4>
+                        <span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700 whitespace-nowrap">STAR 기법</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs pt-1">
+                        <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800">
+                            <strong class="text-cyan-400 block mb-0.5"><i class="fa-solid fa-circle-info mr-1"></i> S (Situation / 상황)</strong>
+                            <p class="text-slate-300 text-[11px]">${qObj.star.S}</p>
+                        </div>
+                        <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800">
+                            <strong class="text-amber-400 block mb-0.5"><i class="fa-solid fa-list-check mr-1"></i> T (Task / 과제)</strong>
+                            <p class="text-slate-300 text-[11px]">${qObj.star.T}</p>
+                        </div>
+                        <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800 sm:col-span-2">
+                            <strong class="text-emerald-400 block mb-0.5"><i class="fa-solid fa-wrench mr-1"></i> A (Action / 내가 취한 행동)</strong>
+                            <p class="text-slate-200 text-[11px] font-medium leading-relaxed">${qObj.star.A}</p>
+                        </div>
+                        <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800 sm:col-span-2">
+                            <strong class="text-purple-400 block mb-0.5"><i class="fa-solid fa-chart-line mr-1"></i> R (Result / 성과 & 레슨런)</strong>
+                            <p class="text-slate-300 text-[11px]">${qObj.star.R}</p>
+                        </div>
+                    </div>
+
+                    <div class="pt-2 flex flex-wrap items-center gap-1.5 text-[11px]">
+                        <span class="text-slate-400 mr-1 font-medium"><i class="fa-solid fa-key text-cyan-400"></i> 답변 필수 키워드:</span>
+                        ${qObj.keywords.map(kw => `<span class="px-2 py-0.5 rounded-md bg-cyan-950/80 text-cyan-300 border border-cyan-800/60 font-medium">${kw}</span>`).join('')}
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('mockCompSelect').value = currentPrepCompany;
+            loadMockQuestions();
+        }
+
+        function renderFlashcards() {
+            const grid = document.getElementById('flashcardsGrid');
+            if (!grid) return;
+
+            grid.innerHTML = FLASHCARDS_DATA.map((card, idx) => `
+                <div onclick="toggleFlashcard(${idx})" class="bg-slate-900/90 hover:bg-slate-900 p-4 rounded-xl border border-slate-800 cursor-pointer transition flex flex-col justify-between space-y-3 relative group">
+                    <div>
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                            ${card.category}
+                        </span>
+                        <h4 class="text-xs font-bold text-slate-100 mt-2 flex items-start justify-between">
+                            <span>Q. ${card.q}</span>
+                            <i class="fa-solid fa-repeat text-slate-500 group-hover:text-cyan-400 transition text-xs mt-0.5"></i>
+                        </h4>
+                    </div>
+
+                    <div id="flashcard-ans-${idx}" class="hidden pt-2 border-t border-slate-800 text-[11px] text-cyan-300 whitespace-pre-line leading-relaxed">
+                        ${card.a}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleFlashcard(idx) {
+            const ansElem = document.getElementById(`flashcard-ans-${idx}`);
+            if (ansElem) ansElem.classList.toggle('hidden');
+        }
+
+        function renderExperienceVault() {
+            const grid = document.getElementById('experienceVaultGrid');
+            if (!grid) return;
+
+            grid.innerHTML = EXPERIENCE_VAULT_DATA.map(cat => `
+                <div class="glass-card rounded-2xl p-5 border border-slate-800 space-y-3">
+                    <h3 class="text-sm font-bold text-${cat.color}-400 flex items-center gap-2">
+                        <i class="fa-solid ${cat.icon}"></i> ${cat.title}
+                    </h3>
+                    <div class="space-y-2.5 text-xs">
+                        ${cat.items.map(item => `
+                            <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800 space-y-1">
+                                <strong class="text-slate-100 block font-semibold">${item.name}</strong>
+                                <p class="text-slate-400 text-[11px] leading-relaxed">${item.desc}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderTroubleshootingDB() {
+            const grid = document.getElementById('troubleGrid');
+            if (!grid) return;
+
+            const query = (document.getElementById('troubleSearchInput')?.value || '').toLowerCase().trim();
+
+            const filtered = TROUBLESHOOTING_DATA.filter(item => {
+                return item.title.toLowerCase().includes(query) ||
+                       item.symptom.toLowerCase().includes(query) ||
+                       item.cause.toLowerCase().includes(query) ||
+                       item.action.toLowerCase().includes(query) ||
+                       item.category.toLowerCase().includes(query);
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="glass-card p-8 rounded-2xl text-center text-slate-500 text-xs">
+                        검색 조건에 맞는 트러블슈팅 사례가 없습니다.
+                    </div>`;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(item => `
+                <div class="glass-card rounded-2xl p-5 border border-slate-800 space-y-3">
+                    <div class="flex items-center justify-between gap-2">
+                        <h4 class="text-sm font-bold text-slate-100 flex items-center gap-2">
+                            <i class="fa-solid fa-wrench text-amber-400"></i> ${item.title}
+                        </h4>
+                        <span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-cyan-400 border border-slate-700 whitespace-nowrap">
+                            ${item.category}
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs pt-1">
+                        <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800">
+                            <strong class="text-rose-400 block mb-1 text-[11px]"><i class="fa-solid fa-triangle-exclamation mr-1"></i> 1단계: 현상 파악</strong>
+                            <p class="text-slate-300 text-[11px]">${item.symptom}</p>
+                        </div>
+                        <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800">
+                            <strong class="text-amber-400 block mb-1 text-[11px]"><i class="fa-solid fa-magnifying-glass mr-1"></i> 2단계: 원인 규명</strong>
+                            <p class="text-slate-300 text-[11px]">${item.cause}</p>
+                        </div>
+                        <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800">
+                            <strong class="text-emerald-400 block mb-1 text-[11px]"><i class="fa-solid fa-circle-check mr-1"></i> 3단계: 조치 및 재발방지</strong>
+                            <p class="text-slate-200 text-[11px] font-medium">${item.action}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderChecklist() {
+            const container = document.getElementById('checklistContainer');
+            if (!container) return;
+
+            container.innerHTML = CHECKLIST_GROUPS.map(group => `
+                <div class="glass-card rounded-2xl p-5 border border-slate-800 space-y-3">
+                    <h3 class="text-sm font-bold text-cyan-400 flex items-center gap-2 border-b border-slate-800 pb-2">
+                        <i class="fa-solid ${group.icon}"></i> ${group.title}
+                    </h3>
+                    <div class="space-y-2">
+                        ${group.items.map(item => {
+                            const isChecked = !!state.checklist[item.id];
+                            return `
+                                <label onclick="toggleChecklist('${item.id}')" class="flex items-start gap-2.5 p-2 rounded-xl hover:bg-slate-900/80 cursor-pointer transition text-xs border border-transparent hover:border-slate-800">
+                                    <input type="checkbox" ${isChecked ? 'checked' : ''} class="mt-0.5 rounded border-slate-700 text-cyan-500 focus:ring-0 focus:ring-offset-0 bg-slate-900">
+                                    <span class="${isChecked ? 'line-through text-slate-500' : 'text-slate-200'}">${item.text}</span>
+                                </label>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `).join('');
+
+            updateStats();
+        }
+
+        function toggleChecklist(id) {
+            state.checklist[id] = !state.checklist[id];
+            saveChecklistToStorage();
+            renderChecklist();
+        }
+
+        function checkAllChecklist(val) {
+            CHECKLIST_GROUPS.forEach(g => {
+                g.items.forEach(i => {
+                    state.checklist[i.id] = val;
+                });
+            });
+            saveChecklistToStorage();
+            renderChecklist();
+            showToast(val ? "전체 항목이 완료 처리되었습니다." : "전체 항목이 해제되었습니다.");
+        }
+
+        // -------------------------------------------------------------
+        // MOCK INTERVIEW SIMULATOR LOGIC
+        // -------------------------------------------------------------
+        function loadMockQuestions() {
+            const selectedComp = document.getElementById('mockCompSelect').value;
+            const data = COMPANY_INTERVIEW_DATA[selectedComp];
+            const selectElem = document.getElementById('mockQuestSelect');
+
+            if (!data) return;
+
+            selectElem.innerHTML = data.questions.map((q, i) => `
+                <option value="${i}">질문 ${i+1}: ${q.q.substring(0, 30)}...</option>
+            `).join('');
+
+            updateMockQuestionDisplay();
+            selectElem.onchange = updateMockQuestionDisplay;
+        }
+
+        function updateMockQuestionDisplay() {
+            const selectedComp = document.getElementById('mockCompSelect').value;
+            const qIdx = parseInt(document.getElementById('mockQuestSelect').value || '0');
+            const data = COMPANY_INTERVIEW_DATA[selectedComp];
+
+            if (data && data.questions[qIdx]) {
+                document.getElementById('mockQuestionDisplay').innerText = data.questions[qIdx].q;
+            }
+
+            document.getElementById('mockAnswerReveal').classList.add('hidden');
+            document.getElementById('mockUserAnswer').value = '';
+        }
+
+        function checkMockAnswer() {
+            const selectedComp = document.getElementById('mockCompSelect').value;
+            const qIdx = parseInt(document.getElementById('mockQuestSelect').value || '0');
+            const data = COMPANY_INTERVIEW_DATA[selectedComp];
+
+            if (!data || !data.questions[qIdx]) return;
+
+            const qObj = data.questions[qIdx];
+            const userText = document.getElementById('mockUserAnswer').value.trim();
+
+            if (!userText) {
+                showToast("답변을 입력하신 후 정답을 확인해 보세요!");
+            }
+
+            document.getElementById('mockStarBreakdown').innerHTML = `
+                <p><strong class="text-cyan-400">Situation:</strong> ${qObj.star.S}</p>
+                <p><strong class="text-amber-400">Task:</strong> ${qObj.star.T}</p>
+                <p><strong class="text-emerald-400">Action:</strong> ${qObj.star.A}</p>
+                <p><strong class="text-purple-400">Result:</strong> ${qObj.star.R}</p>
+            `;
+
+            document.getElementById('mockKeywordsChecklist').innerHTML = qObj.keywords.map(kw => {
+                const isIncluded = userText.includes(kw);
+                return `
+                    <label class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-medium border ${isIncluded ? 'bg-emerald-950/60 text-emerald-300 border-emerald-800/60' : 'bg-slate-800 text-slate-400 border-slate-700'}">
+                        <input type="checkbox" ${isIncluded ? 'checked' : ''} class="w-3.5 h-3.5 rounded text-emerald-500">
+                        ${kw} ${isIncluded ? '✓' : ''}
+                    </label>
+                `;
+            }).join('');
+
+            document.getElementById('mockAnswerReveal').classList.remove('hidden');
+            showToast("모범 답안과 필수 기술 키워드 체크리스트가 공개되었습니다!");
+        }
+
+        function copyPitchToClipboard() {
+            const pitchText = document.getElementById('pitchScriptText').innerText;
+            const textarea = document.createElement('textarea');
+            textarea.value = pitchText;
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showToast("1분 자기소개 스크립트가 클립보드에 복사되었습니다!");
+            } catch (err) {
+                showToast("복사 실패. 직접 드래그하여 복사해주세요.");
+            }
+            document.body.removeChild(textarea);
+        }
+
+        // -------------------------------------------------------------
+        // APPLICATION MODAL & CRUD
+        // -------------------------------------------------------------
+        function openAddAppModal() {
+            document.getElementById('appEditId').value = '';
+            document.getElementById('appForm').reset();
+            document.getElementById('appModalTitle').innerHTML = `<i class="fa-solid fa-pen-to-square text-cyan-400"></i> 새 지원 내역 추가`;
+            openModal('appModal');
+        }
+
+        function openEditAppModal(id) {
+            const app = state.applications.find(a => a.id === id);
+            if (!app) return;
+
+            document.getElementById('appEditId').value = app.id;
+            document.getElementById('formCompany').value = app.company;
+            document.getElementById('formPosition').value = app.position;
+            document.getElementById('formStatus').value = app.status;
+            document.getElementById('formDeadline').value = app.deadline || '';
+            document.getElementById('formSalary').value = app.salary || '';
+            document.getElementById('formNotes').value = app.notes || '';
+
+            document.getElementById('appModalTitle').innerHTML = `<i class="fa-solid fa-pen-to-square text-cyan-400"></i> 지원 내역 수정`;
+            openModal('appModal');
+        }
+
+        function saveApplication(e) {
+            e.preventDefault();
+            const id = document.getElementById('appEditId').value;
+            const company = document.getElementById('formCompany').value.trim();
+            const position = document.getElementById('formPosition').value.trim();
+            const status = document.getElementById('formStatus').value;
+            const deadline = document.getElementById('formDeadline').value.trim();
+            const salary = document.getElementById('formSalary').value.trim();
+            const notes = document.getElementById('formNotes').value.trim();
+
+            if (id) {
+                const idx = state.applications.findIndex(a => a.id === id);
+                if (idx !== -1) {
+                    state.applications[idx] = { id, company, position, status, deadline, salary, notes };
+                }
+            } else {
+                const newApp = {
+                    id: 'app_' + Date.now(),
+                    company, position, status, deadline, salary, notes
+                };
+                state.applications.unshift(newApp);
+            }
+
+            saveAppsToStorage();
+            renderAppsTable();
+            updateStats();
+            closeModal('appModal');
+            showToast("지원 내역이 저장되었습니다.");
+        }
+
+        function deleteApplication(id) {
+            if (confirm("이 지원 내역을 삭제하시겠습니까?")) {
+                state.applications = state.applications.filter(a => a.id !== id);
+                saveAppsToStorage();
+                renderAppsTable();
+                updateStats();
+                showToast("지원 내역이 삭제되었습니다.");
+            }
+        }
+
+        function addCompanyToTracker(name, position, salary) {
+            closeModal('companyModal');
+            const existing = state.applications.find(a => a.company === name);
+            if (existing) {
+                showToast(`${name}은(는) 이미 지원 현황 트래커에 등록되어 있습니다.`);
+                switchTab('app-tracker');
+                return;
+            }
+            const newApp = {
+                id: 'app_' + Date.now(),
+                company: name,
+                position: position,
+                status: '서류 작성 중',
+                deadline: '지원예정',
+                salary: salary,
+                notes: `${name} 맞춤 자소서 및 트러블슈팅 작성 중`
+            };
+            state.applications.unshift(newApp);
+            saveAppsToStorage();
+            renderAppsTable();
+            updateStats();
+            switchTab('app-tracker');
+            showToast(`${name} 지원 내역이 트래커에 추가되었습니다!`);
+        }
+
+        function openCompanyModal(compId) {
+            const comp = TARGET_COMPANIES_DATA.find(c => c.id === compId);
+            if (!comp) return;
+
+            const modalContent = document.getElementById('companyModalContent');
+            modalContent.innerHTML = `
+                <div class="space-y-5 text-slate-200">
+                    <div>
+                        <span class="text-xs font-bold px-2.5 py-1 rounded-md bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+                            ${comp.type}
+                        </span>
+                        <h2 class="text-2xl font-bold text-slate-100 mt-2">${comp.name} 맞춤 채용 대응 전략</h2>
+                        <p class="text-xs text-slate-400 mt-1">${comp.position} | ${comp.location}</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-slate-900 p-3.5 rounded-xl border border-slate-800 text-xs">
+                        <div>
+                            <span class="text-slate-400 block mb-0.5"><i class="fa-solid fa-sack-dollar text-emerald-400 mr-1"></i> 연봉 요건</span>
+                            <p class="font-bold text-slate-100">${comp.salary}</p>
+                            <p class="text-[11px] text-slate-400 mt-0.5">${comp.baseSalary}</p>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 block mb-0.5"><i class="fa-solid fa-user-clock text-amber-400 mr-1"></i> 교대근무 방식</span>
+                            <p class="font-bold text-slate-100">${comp.shift}</p>
+                            <p class="text-[11px] text-amber-400/90 mt-0.5">${comp.shiftTag}</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <h4 class="text-sm font-bold text-cyan-400 flex items-center gap-1.5">
+                            <i class="fa-solid fa-bullseye"></i> 합격 핵심 전략 (전문대/초대졸 맞춤)
+                        </h4>
+                        <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800 text-xs space-y-2">
+                            <p class="text-slate-300">1. ${comp.strategy.point1}</p>
+                            <p class="text-slate-300">2. ${comp.strategy.point2}</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <h4 class="text-sm font-bold text-emerald-400 flex items-center gap-1.5">
+                            <i class="fa-solid fa-pen-nib"></i> 자기소개서 & 면접 핵심 가이드
+                        </h4>
+                        <div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-800 text-xs space-y-3">
+                            <div>
+                                <span class="text-slate-400 font-semibold block mb-1">✍️ 자기소개서 작성 팁</span>
+                                <p class="text-slate-300 leading-relaxed">${comp.strategy.essayTip}</p>
+                            </div>
+                            <div class="pt-2 border-t border-slate-800">
+                                <span class="text-slate-400 font-semibold block mb-1">🗣️ 예상 전공 면접 질문</span>
+                                <p class="text-cyan-300 italic font-medium">"${comp.strategy.interviewQ}"</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-2 flex flex-wrap items-center justify-between gap-2 border-t border-slate-800/80">
+                        <button onclick="goToCompanyInterviewPrep('${comp.id}')" class="px-4 py-2 bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 rounded-xl font-bold text-xs hover:bg-cyan-500/20 flex items-center gap-1.5">
+                            <i class="fa-solid fa-graduation-cap text-cyan-400"></i> 🎯 이 기업 면접 준비자료 바로가기
+                        </button>
+                        <button onclick="addCompanyToTracker('${comp.name}', '${comp.position}', '${comp.salary.split(' ')[0]} / ${comp.location.split(' ')[0]}')" class="px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 font-bold text-xs rounded-xl hover:brightness-110 flex items-center gap-1.5">
+                            <i class="fa-solid fa-plus"></i> 내 지원 현황 트래커에 추가
+                        </button>
+                    </div>
+                </div>
+            `;
+            openModal('companyModal');
+        }
+
+        function goToCompanyInterviewPrep(compId) {
+            closeModal('companyModal');
+            switchTab('interview-prep');
+            selectPrepCompany(compId);
+        }
+
+        // -------------------------------------------------------------
+        // UTILITY FUNCTIONS & STATS
+        // -------------------------------------------------------------
+        function updateStats() {
+            const totalApps = state.applications.length;
+            const activeApps = state.applications.filter(a => ['서류 제출 완료', '인적성/검사', '면접 전형'].includes(a.status)).length;
+            const passedApps = state.applications.filter(a => ['면접 전형', '최종 합격'].includes(a.status)).length;
+
+            const totalAppsElem = document.getElementById('statTotalApps');
+            const activeAppsElem = document.getElementById('statActiveApps');
+            const passedAppsElem = document.getElementById('statPassedApps');
+
+            if (totalAppsElem) totalAppsElem.innerHTML = `${totalApps}<span class="text-xs text-slate-400 font-normal ml-1">개사</span>`;
+            if (activeAppsElem) activeAppsElem.innerHTML = `${activeApps}<span class="text-xs text-slate-400 font-normal ml-1">건</span>`;
+            if (passedAppsElem) passedAppsElem.innerHTML = `${passedApps}<span class="text-xs text-slate-400 font-normal ml-1">건</span>`;
+
+            let totalItems = 0;
+            let checkedItems = 0;
+            CHECKLIST_GROUPS.forEach(g => {
+                g.items.forEach(i => {
+                    totalItems++;
+                    if (state.checklist[i.id]) checkedItems++;
+                });
+            });
+
+            const percent = totalItems > 0 ? Math.round((checkedItems / totalItems) * 100) : 0;
+            const percentElem = document.getElementById('checklistPercentText');
+            const barElem = document.getElementById('checklistProgressBar');
+
+            if (percentElem) percentElem.innerText = `${percent}%`;
+            if (barElem) barElem.style.width = `${percent}%`;
+        }
+
+        function openModal(id) {
+            const m = document.getElementById(id);
+            if (m) m.classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            const m = document.getElementById(id);
+            if (m) m.classList.add('hidden');
+        }
+
+        function showToast(msg) {
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+            const toast = document.createElement('div');
+            toast.className = 'glass-card bg-slate-900/95 text-slate-100 px-4 py-3 rounded-xl border border-cyan-500/40 shadow-xl flex items-center gap-2 text-xs transition-all duration-300 transform translate-y-2 pointer-events-auto';
+            toast.innerHTML = `<i class="fa-solid fa-circle-check text-cyan-400"></i> <span>${msg}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+
+        function resetAllDataConfirm() {
+            if (confirm("모든 지원 현황 및 체크리스트 데이터를 초기화하시겠습니까?")) {
+                localStorage.removeItem('maint_apps');
+                localStorage.removeItem('maint_checklist');
+                state.applications = [...DEFAULT_APPLICATIONS_DATA];
+                state.checklist = {...DEFAULT_CHECKLIST_DATA};
+                saveAppsToStorage();
+                saveChecklistToStorage();
+                initData();
+                showToast("데이터가 성공적으로 초기화되었습니다.");
+            }
+        }
+
+        function saveAppsToStorage() {
+            localStorage.setItem('maint_apps', JSON.stringify(state.applications));
+        }
+
+        function saveChecklistToStorage() {
+            localStorage.setItem('maint_checklist', JSON.stringify(state.checklist));
+        }
+
+        // DOM Ready listener
+        window.addEventListener('DOMContentLoaded', initData);
+    </script>
+</body>
+</html>
